@@ -6,15 +6,25 @@ This document specifies a procedure for releasing and versioning to allow for st
 
 ## Overview
 
-The eWallet release is consist of a stable release and a nightly release. A stable release is meant to be run by a Provider that require stability and compatibility, while a nightly release is meant for development and testing propose. The stable releases should be versioned using [SemVer](https://semver.org/).
+The eWallet release is consist of a stable release and a development release. A stable release is meant to be run by a Provider that require stability and compatibility, while a development release is meant for development and testing propose. The stable releases should be versioned using [SemVer](https://semver.org/).
 
 ## Specifications
 
 ### Stable Release
 
-A stable release is a release that provides compatibility and stability guarantee and thus require an extensive end-to-end testing prior to release. Due to this, **we will only provide a stable release as a Docker image based on Alpine Linux**. The Docker image will be tagged with the release version and should use a `:latest` tag to refer to the latest stable release.
+A stable release is a release that provides compatibility and stability guarantee and must pass an extensive end-to-end testing and migration testing from supported versions prior to release.
 
-Only a the latest `MAJOR.MINOR.PATCH` version of the last 2 `MAJOR.MINOR` versions will be supported. However, we may provide security fixes to a non-supported versions as the team see fit. As an example, we shall support the following versions released in the past:
+| Test subject        | Required |
+| ------------------- | -------- |
+| Linting             | **Yes**  |
+| Unit testing        | **Yes**  |
+| Integration testing | **Yes**  |
+| End to end testing  | **Yes**  |
+| Migration testing   | **Yes**  |
+
+A stable release will be provided as a Docker image based on Alpine Linux. The Docker image will be tagged with the release version (e.g. `v1.0.3`) and will use a `:latest` tag to refer to the latest stable release.
+
+Only the latest `MAJOR.MINOR.PATCH` version of the last 2 `MAJOR.MINOR` versions will be supported. However, we may provide security fixes to non-supported versions as the team see fit. For demostration purpose, given that we released the following versions at a specific date, our support condition shall be:
 
 | Version | Release Date | Support                                    |
 | ------- | ------------ | ------------------------------------------ |
@@ -27,45 +37,51 @@ Only a the latest `MAJOR.MINOR.PATCH` version of the last 2 `MAJOR.MINOR` versio
 | 1.0.1   | 2017-08-01   | Not supported, `1.0` discontinued          |
 | 1.0.0   | 2016-08-01   | Not supported, `1.0` discontinued          |
 
-In the above table, `1.0.2` is released as a security fix outside of the support period. However, even though it is released after the supported version `1.1.1`, the version `1.0.2` won't have any guarantee that it will receive any further support.
+In the figure above, version `1.0.2` is released as a security fix outside of the support period. This release is considered a hotfix release. However, even though version `1.0.2` is released after the supported version `1.1.1`, the version `1.0.2` won't be guarantee to receive any further updates. Provider is encouraged to upgrade to latest supported version.
 
-A stable release require that end-to-end tests and migration test from the supported versions are passed.
+### Development Release
 
-### Nightly Release
+A development release is a release that provides bleeding edge features that may still be unstable, as the branch is only required to pass unit testing and integration testing. Usage of development release in a production environment is highly discouraged, and only recommended for testing and evaluation purpose.
 
-A nightly release is a release that provides bleeding edge feature at a cost of stability and incompatibility. Thus, a nightly release is only recommended for testing and evaluation purpose. The nightly release will be provided as a binary release and a Docker image based on Alpine Linux. The Docker image will be tagged with commit ID and should use a `:nightly` tag to refer to the latest nightly release.
+| Test subject        | Required |
+| ------------------- | -------- |
+| Linting             | **Yes**  |
+| Unit testing        | **Yes**  |
+| Integration testing | **Yes**  |
+| End to end testing  | No       |
+| Migration testing   | No       |
 
-A nightly release shall require unit testing and integration testing.
+The development release will be provided as a binary release and a Docker image based on Alpine Linux. The Docker image will be tagged with commit ID and will have a `:dev` tag to refer to the latest development release.
 
 ### Branching Model
 
-Stable branch shall be separated from the mainline development branch with changes selectively backported when a feature is considered stable enough. Backporting shall be done via a **Pull Request** against the stable branch and shall be done on a per-feature basis.
-
-Once a stable release will happen, a stable release shall have its own branch in a form of `stable-MAJOR.MINOR` and tag with `vMAJOR.MINOR.PATCH` as appropriate.
+The branching model will utilize a `master` branch, a stable version branch and a feature branch. To demostrate:
 
 ```
-          a1    b1   a2   b2   a3   c1   c2   c3   a4   b3
-develop ---o----o----o----o----o----o----o----o----o----o---------->
-           |    |    |    |    |    |    |    |
-           +--= | =--+    |    |    +----+----+
-                |    |    |    |              |
-                \--= | =--+--= | =--+         |
-                     |         |    |         |
-                     v         v    v         v
- stable -------------o---------o----o---------o-------------------->
-                  {a1,a2} \   {a3} {b1,b2}   {c1,c2,c3} \
-                           \    \                        \
-                            \    +------------            \
-                             \                \            \
- stable-1.0                   t----------o-----t------------------->
-                         v1.0.0 {a1,a2}     v1.0.1 {a3}      \
-                                                              \
- stable-1.1                                                    t--->
-                                                             v1.1.0
+feature2    -o---------o----------o
+                                   \
+                                    \
+feature1    -o                       \
+              \                       \
+               v                       v
+master      ----o-----------------------o-------------------------------->
+                             \                           \
+                              v                           \
+stable-1.0                     o-----------o----o----------^------------->
+                            v1.0.0           v1.0.1         \
+                                                             v
+stable-1.1                                                    o---------->
+                                                            v1.1.0
 ```
 
-In this chart, changes are selectively backported from `develop` to `stable` in a per-feature basis (`{a1,a2}`, `{b1,b2}`, ...) This process can be done by cherry-picking changes and fixing conflicts as necessary.
+#### Feature Branches
 
-Once we made a release, we branch directly from the `HEAD` of stable branch at a time into a release branch (`stable-1.0`, `stable-1.1`, ...) and only backport fixes for features that are already released within that `MAJOR.MINOR` version.
+Feature branches, such as `feature2` and `feature1`, are development branches that implements new feature or change existing functionality. These branches may be long-running and should be merged to `master` only when the feature is considered stable enough for public consumption. Feature branches should regularly sync up with master to avoid too much code diversion. Feature branches may have its own public testing environment for each branch with its data copied from staging on each deploy.
 
-In the chart, there's a commit between `v1.0.0` and `v1.0.1` in addition to back-porting the fix from stable branch, this is a **hotfix** for an issue that only exists within the `1.0.0` release but not in the stable release.
+#### `master` branch
+
+The `master` branch is the branch that development release will be based on. While we required that feature branch must be stable enough before it could be merged into `master`, the `master` branch may still not stable enough to use in production environment. The `master` branch is where a stable branch will be branched from when it is considered stable enough. Before branching into stable, `master` may undergo a period of feature freeze, in which new features are not allowed to be merged onto the master branch, and only stability or bugfixes are accepted. The master branch will be deployed automatically to the OmiseGO staging environment for internal and public testing.
+
+#### Stable version branches
+
+Stable version branches such as `stable-1.0` and `stable-1.1`, are branches that correspond to the `MAJOR.MINOR` release versions. The branch is branched from `master` when the `master` branch is considered enable enough. Stable version branches are solely for maintenance purpose and will not accept any new features except for bug or security fixes.
