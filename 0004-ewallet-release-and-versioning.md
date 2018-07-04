@@ -1,4 +1,13 @@
-# OIP-xxxx: eWallet Release & Versioning
+---
+oip: "0004"
+title: eWallet Release & Versioning
+status: Active
+type: eWallet
+author: Kridsada Thanabulpong <sirn@omise.co>
+created: 2018-07-04
+---
+
+# OIP-0004: eWallet Release & Versioning
 
 ## Abstract
 
