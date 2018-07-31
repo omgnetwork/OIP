@@ -56,7 +56,7 @@ For example, an exchange pair of `from_token: AAA`, `to_token: BBB`, `rate: 10.0
 
 *The exchange rate stored is the rate of a token's main unit to another token's main unit, not subunits.*
 
-**EWalletDB.Transfer:** Contains the data about each transaction that happened.
+**EWalletDB.Transaction:** Contains the data about each transaction that happened.
 
   - To add:
     - `from_amount` (integer)
@@ -75,7 +75,7 @@ For example, an exchange pair of `from_token: AAA`, `to_token: BBB`, `rate: 10.0
 
 **LocalLedgerDB.Transaction:** A logical group of ledger entries that represents a single business event (e.g. a same-token transfer, an exchange transaction, an exchange transfer).
 
-Each `EWalletDB.Transfer` item is one `LocalLedgerDB.Transaction`. One `LocalLedgerDB.Transaction` for an exchange has at least 4 `LocalLedgerDB.Entry`. For example:
+Each `EWalletDB.Transaction` item is one `LocalLedgerDB.Transaction`. One `LocalLedgerDB.Transaction` for an exchange has at least 4 `LocalLedgerDB.Entry`. For example:
 
   - transaction.type = “internal_exchange”
   - transaction.exchange_pair_id, e.g. "BTC/ETH"
@@ -105,7 +105,7 @@ At the API level, this can be represented as a typical `/transaction.create` end
 ```json
 (Assuming subunit_to_unit = 1 for simplicity)
 
-# EWalletDB.Transfer
+# EWalletDB.Transaction
 {
   "id": "tfr_1234567890",
   "type": "internal",
@@ -158,10 +158,10 @@ This is when a user wants to exchange a token for another, where the sender and 
 ```json
 (Assuming subunit_to_unit = 1 for simplicity)
 
-# EWalletDB.Transfer
+# EWalletDB.Transaction
 {
   "id": "tfr_1234567890",
-  "type": "exchange",
+  "type": "internal",
   "from": "bal_alice_1111",
   "from_amount": 10,
   "from_token_id": "tok_AAA_1234",
@@ -223,10 +223,10 @@ This is when a sender wants to transfer a token and expects the receiver at a di
 ```json
 (Assuming subunit_to_unit = 1 for simplicity)
 
-# EWalletDB.Transfer
+# EWalletDB.Transaction
 {
   "id": "tfr_1234567890",
-  "type": "exchange_transfer",
+  "type": "transaction",
   "from": "bal_alice_1111",
   "from_amount": 10,
   "from_token_id": "tok_AAA_1234",
