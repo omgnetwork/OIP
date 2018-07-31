@@ -89,7 +89,7 @@ Each `EWalletDB.Transfer` item is one `LocalLedgerDB.Transaction`. One `LocalLed
 
 For internal exchanges, the operation happens at the DB's transaction level so it should be seamlessly handled within the eWallet server as long as the exchange operations are wrapped inside a single DB transaction.
 
-At the API level, this can be represented as a typical `/transfer` endpoint, where the only difference is that for exchanges, the `from_token_id` and `to_token_id` have different values.
+At the API level, this can be represented as a typical `/transaction.create` endpoint, where the only difference is that for exchanges, the `from_token_id` and `to_token_id` have different values.
 
 #### Same-token transfers (existing feature)
 
@@ -289,7 +289,7 @@ Transactions are always made with the exchange amounts, not the rate. Although a
 
 Consequently, the UI must display the exchanging amounts and asks user to confirm the amount, not the rate. The rate can be displayed as a complimenting information.
 
-### `/transfer.calculate` endpoint
+### `/transaction.calculate` endpoint
 
 Calculate the amount of minted tokens to be exchanged, used for confirming the exact amount with the user before executing the actual exchange.
 
@@ -365,7 +365,7 @@ Calculate the amount of minted tokens to be exchanged, used for confirming the e
 }
 ```
 
-### `/transfer` endpoint
+### `/transaction.create` endpoint
 
 Exchange a certain amount of minted tokens between two addresses.
 
@@ -506,8 +506,8 @@ The request may be sent without `from_amount` or `to_amount` and subjects to the
 
 2. An `exchange_account_id` needs to be specified for separation of responsibility of each account. This `exchange_account_id` would also allow for more use cases, e.g. dedicate an account as the exchange account and put funds in there. It is then possible to limit the amount of tokens that can be exchanged by limiting the funds that the account has.
 
-3. This RFC chose to reuse the `/transfer` endpoint because of its similarities to an exchange transaction and exchange transfer. An exchange transaction is basically a transfer of different tokens to the same address, while an exchange transfer can be represented by a transfer that has different from/to tokens.
+3. This RFC chose to reuse the `/transaction.create` endpoint because of its similarities to an exchange transaction and exchange transfer. An exchange transaction is basically a transfer of different tokens to the same address, while an exchange transfer can be represented by a transfer that has different from/to tokens.
 
-4. There could be a discrepancy between the time `/exchange.calculate` is made and when `/transfer` happens. Given that this is an internal exchange and exchange rates are fixed, unchanged for most of the time. The discrepancy will be very rare to occur.
+4. There could be a discrepancy between the time `/transaction.calculate` is made and when `/transaction.create` happens. Given that this is an internal exchange and exchange rates are fixed, unchanged for most of the time. The discrepancy will be very rare to occur.
 
 5. The exchange rate is stored as a main unit to main unit ratio, not subunits. This is for readability and is subunit-agnostic. So in order to exchange between tokens with different `subunit_to_unit` values, one need to take into account the difference in scale of the subunits.
