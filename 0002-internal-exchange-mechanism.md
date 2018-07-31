@@ -493,11 +493,12 @@ The request may be sent without `from_amount` or `to_amount` and subjects to the
 
 ### Error codes
 
-- `transaction:insufficient_funds` - when requestor does not have enough funds to exchange.
+- `transaction:insufficient_funds` - when the requestor does not have enough funds to exchange.
 - `exchange:insufficient_funds` - when the counterparty does not have enough funds to exchange back. It is important to distinguish between the user and the counterparty so that user-friendly error message can be displayed, and the user knows if its the counterparty's funds or theirs that is insufficient.
-- `exchange:pair_not_found` - when request requires an exchange pair that does not exist.
-- `exchange:pair_not_reversible` - when request requires an exchange pair that exists, but the pair does not allow to be exchanged in the opposite direction.
+- `exchange:pair_not_found` - when the request requires an exchange pair that does not exist.
 - `exchange:invalid_rate` - when the provided exchange amounts or the exchange rate is invalid.
+- `exchange:pair_already_exists` - when the request attempts to create a pair that already exists.
+- `exchange:opposite_pair_not_found` - when the request asks for `sync_opposite: true` but the opposite pair could not be found.
 
 ## Rationale
 
