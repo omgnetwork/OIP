@@ -15,7 +15,27 @@ Currently addresses are stored as UUID for wallets in the eWallet. This format i
 
 ## Specification
 
-I'm not sure which one is best, but here are 7 formats that @unnawut and I came up with:
+A wallet address consists of 16 characters. The 16 characters comprise of 4 letters followed by 12 numeric digits.
+
+There may be separators to help its readbility. The separator can be any printable character that are not `[A-Za-z0-9]`. The separator can be placed at any position in the address.
+
+To ensure interoperability, the separators are stripped before usage and/or storage. Hence the followings all refer to the same wallet address:
+
+- `abcd111122223333`
+- `abcd_111122223333`
+- `abcd-1111-2222-3333`
+- `abcd-1111_2222_3333`
+- `a-bcd-111-122-223-333`
+- `abc-d11-112-222-333-3`
+
+## Rationale
+
+Allowing 4 letters gives the possibility to customize wallet addresses to suit the eWallet provider. It distinguishes the wallet address from credit card numbers to prevent confusion and any impact from existing policies and regulations regarding storing, transmitting and processing credit card numbers. It also opens up more available wallet addresses.
+
+16 numeric digits = 10^16 = 1E16 possibilities
+4 letters + 12 numeric digits = 4^26 * 10^16 = 4.56976E21 possibilities
+
+Other explored options include:
 
 ### 1. UUID
 
@@ -27,29 +47,14 @@ The second option is pretty simple: we use the same format used for every extern
 
 Still hard to type for a user and a bit too long, also contains both letters and numbers.
 
-### 3. xxxx_332493849383
-
-Third option is using 16 characters (4 letters + 12 digits) to have a format that looks like `abcd_111122223333` and could be shown to the user as `abcd-1111-2222-3333` with 4 cases to fill (giving the same feeling as credit card, minus the 4 characters at the beginning).
-
-Why use those 4 characters? To increase the potential number of addresses.
-
-10^16 = 1E16 possibilities
-4^26 * 10^16 = 4.56976E21 possibilities
-
-4 characters are easy to remember and 12 digits is just two more than a phone number so with this, I believe anyone should be able to remember their address.
-
-### 4. `this-is-my-address-yo`
+### 3. `this-is-my-address-yo`
 
 Another option is to use either an auto-generated "passphrase:" with 3 to 5 words that would be used as an address. An added feature or alternative would be to allow users to enter their own passphrase address (but we'd probably end up with stupid and obcene ones...)
 
-### 5. vvvv-mmmm-uuuu-uuu-c (3324-3239-8328-8438)
+### 4. vvvv-mmmm-uuuu-uuu-c (3324-3239-8328-8438)
 
 Credit card style, with digits for vendor identifier, user identifier, and check digit.
 
-### 6. 324-3-234-1344
+### 5. 324-3-234-1344
 
 Bank account style (Thailand). What people are used to in Thailand.
-
-## More options?
-
-If you guys have more ideas and think we should go with one of the format, let me know! I don't think there's a right answer, they all have their pros and cons, but let's try to find the best one for us!
