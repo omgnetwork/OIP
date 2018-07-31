@@ -141,7 +141,7 @@ At the API level, this can be represented as a typical `/transaction.create` end
 ]
 ```
 
-#### Exchange transaction (proposed by this RFC)
+#### Exchange transaction (proposed by this OIP)
 
 This is when a user wants to exchange a token for another, where the sender and the receiver is the same address.
 
@@ -291,7 +291,7 @@ Consequently, the UI must display the exchanging amounts and asks user to confir
 
 ### `/transaction.calculate` endpoint
 
-Calculate the amount of minted tokens to be exchanged, used for confirming the exact amount with the user before executing the actual exchange.
+Calculate the amount of minted tokens to be exchanged, used for confirming the exact amount with the user before executing the actual transaction.
 
   - Use this endpoint to avoid discrepancies between how endpoint consumer and the server calculates the exchange amount.
   - Errors are returned if it is anticipated to happen in an actual transfer.
@@ -394,8 +394,6 @@ The request may be sent without `from_amount` or `to_amount` and subjects to the
   "to_token_id": "tok_BBB_1234",
   "to_address": "4aa07691-2f99-4cb1-b36c-50763e2d2ba8",
   "exchange_account_id": "acc_01ca2p8jqans5aty5gj5etmjcf",
-  "metadata": {},
-  "encrypted_metadata": {}
   "sync_opposite": true
 }
 ```
