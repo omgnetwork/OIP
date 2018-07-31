@@ -48,7 +48,6 @@ One of the main purposes of the eWallet is to enable exchanges of different mint
   - `from_token_uuid` (uuid)
   - `to_token_uuid` (uuid)
   - `rate` (float)
-  - `reversible` (boolean)
   - `inserted_at` (datetime)
   - `updated_at` (datetime)
   - `deleted_at` (datetime)
@@ -81,7 +80,6 @@ Each `EWalletDB.Transfer` item is one `LocalLedgerDB.Transaction`. One `LocalLed
   - transaction.type = “internal_exchange”
   - transaction.exchange_pair_id, e.g. "BTC/ETH"
   - transaction.exchange_rate, e.g. "1.00"
-  - transaction.exchange_reversed, e.g. true
   - transaction.entry[0], e.g. credit user 10 OMG
   - transaction.entry[1], e.g. debit exchange account 10 OMG
   - transaction.entry[2], e.g. credit exchange account 1 ETH
@@ -342,7 +340,6 @@ Calculate the amount of minted tokens to be exchanged, used for confirming the e
     - `id` (string)
     - `name` (string)
     - `rate` (float)
-    - `reversible` (boolean)
   - `calculated_at` (datetime)
 
 ##### Example
@@ -362,7 +359,6 @@ Calculate the amount of minted tokens to be exchanged, used for confirming the e
       "id": "exg_AAA_BBB_123456",
       "name": "AAA/BBB",
       "rate": "1.00",
-      "reversible": false
     },
     "calculated_at": "2018-01-01T00:00:00Z"
   }
@@ -384,6 +380,7 @@ Exchange a certain amount of minted tokens between two addresses.
 - `to_token_id` (string, required)
 - `to_address` (string, required)
 - `exchange_account_id` (string, required)
+- `sync_opposite` (boolean, optional)
 
 The request may be sent without `from_amount` or `to_amount` and subjects to the same conditions as `/exchange.calculate`.
 
@@ -399,6 +396,7 @@ The request may be sent without `from_amount` or `to_amount` and subjects to the
   "exchange_account_id": "acc_01ca2p8jqans5aty5gj5etmjcf",
   "metadata": {},
   "encrypted_metadata": {}
+  "sync_opposite": true
 }
 ```
 
@@ -438,7 +436,6 @@ The request may be sent without `from_amount` or `to_amount` and subjects to the
     - `from_token_id` (string)
     - `to_token_id` (string)
     - `rate` (float)
-    - `reversed` (boolean)
   - `metadata` (object)
   - `encrypted_metadata` (object)
   - `status` (string)
@@ -484,7 +481,6 @@ The request may be sent without `from_amount` or `to_amount` and subjects to the
       "from_token_id": "tok_AAA_01cbfg349rb8akcvs7vx20a3g0",
       "to_token_id": "tok_ZZZ_01cbfg349rb8akcvs7hq1vzv0d31",
       "rate": 10,
-      "reversed": false
     },
     "metadata": {},
     "encrypted_metadata": {},
