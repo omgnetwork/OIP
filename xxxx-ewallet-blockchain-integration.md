@@ -60,9 +60,14 @@ There are 3 different key management strategies that will be supported by the eW
 
 Very close to the current state of things, except transactions between eWallets happen on the blockchain. Users are not able to get their private keys.
 
-#### 2. Partial custody (providers own all the private keys by default, but users may request ownership of their private keys)
+#### 2. Partial custody (providers own all the private keys by default, but users may request ownership of their private keys with multiple options)
 
 Similar to Full Custody (and a transaction from that strategy is possible at anytime) with a twist: users are able to request ownership of their keys.
+
+The major drawbacks for this strategy are:
+
+- Users need to manage their private keys (backups, etc)
+- Users need to deposit and exit their funds to/from Plasma themselves. This means making an actual OmiseGO wallet application makes a lot of sense to allow users to do exactly that (with notifications, etc.).
 
 #### 3. Non Custodial (providers hold only their private keys, and all users must own their private keys)
 
@@ -110,20 +115,40 @@ A end-user wants to purchase something from eWallet A using a mobile application
 
 In the cases below, both eWallets have funds deposited in Plasma: eWallet A has `ABC` tokens while eWallet B has `ZYX` tokens.
 
-#### eWallet (Full custody) -> eWallet (Full custody)
+#### eWallet A (Full custody) -> eWallet B (Full custody)
 
-1. Using eWallet B mobile app, the user scans a QR code to pay for his purchase at eWallet A (10 `ABC`) using funds stored in eWallet B pooled wallets (`ZYX`). That QR code contains a string composed of an `ewallet_address` and a transaction request ID.
+1. Using eWallet B mobile app, the user scans a QR code to pay for his purchase at eWallet A (10 `ABC`) using funds stored in eWallet B pooled wallets (`ZYX`). That QR code contains a string composed of an `ewallet_pub_key` and a transaction request ID.
 2. eWallet B mobile application calls the `transaction_request.consume` endpoint sending the content of the QR code.
 3. eWallet B detects that the received public key doesn't match its own, meaning the transaction request is hosted by another eWallet.
 4. eWallet B then makes a call to the eWallet Ethereum Name Service sending the public key received in the consumption call. A domain name will be returned by the NS.
 5. eWallet B sends a request to eWallet A to consume the request on behalf of the user. It receives a consumption ID back (with status `awaiting_funds`) and wether or not the tokens need to be converted (and if yes, to which currency) - this is defined by a conversion strategy inside the eWallet. In this case, eWallet A only wants to receive `ABC`. eWallet B connects to the websocket channel for the consumption.
 6. eWallet B requests a quote from the DEX in order to know how many `ZYX` are needed to send 10 `ABC` to eWallet A. An event is sent to eWallet A about the progress.
 7. The user receives the quote through websockets on eWallet B Mobile application and approves it. An event is sent to eWallet A about the progress.
-8. eWallet B places an exchange order to get 10 `ABC`. Once the order has been matched, it sends the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
+8. eWallet B places the exchange order to get 10 `ABC`. Once the order has been matched, it sends the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
 9. eWallet A receives the Plasma event through the watcher, confirm the consumption and notifies eWallet B. eWallet B forward the event to the user's mobile application to let him know the transaction has been confirmed.
 10. eWallet A POS/Admin panel receives an event in the websocket channel for the transaction request.
+11. The user gets what he paid for.
 
 #### eWallet (Full custody) -> eWallet (Partial custody)
+
+1. Using eWallet B mobile app, the user scans a QR code to pay for his purchase at eWallet A (10 `ABC`) using funds stored in his Ethereum wallet (any currency). That QR code contains a string composed of an `ewallet_pub_key` and a transaction request ID.
+2. eWallet B mobile application calls the `transaction_request.consume` endpoint sending the content of the QR code.
+3. eWallet B detects that the received public key doesn't match its own, meaning the transaction request is hosted by another eWallet.
+4. eWallet B then makes a call to the eWallet Ethereum Name Service sending the public key received in the consumption call. A domain name will be returned by the NS.
+5. eWallet B sends a request to eWallet A to consume the request on behalf of the user. It receives a consumption ID back (with status `awaiting_funds`) and wether or not the tokens need to be converted (and if yes, to which currency) - this is defined by a conversion strategy inside the eWallet. In this case, eWallet A only wants to receive `ABC`. eWallet B connects to the websocket channel for the consumption.
+
+6. eWallet B forward the details to the user's mobile application.
+7. The user then needs to request a quote from the DEX directly in order to know how many of his choice of currency are needed to send 10 `ABC` to eWallet A. An event is sent to eWallet A/B about the progress.
+8. The user receives the quote back from the DEX on the Mobile application and approves it. An event is sent to eWallet A/B about the progress.
+
+The path splits here:
+
+9. a) The user deposits funds on Plasma in his choice of currency.
+10. a) The user places the exchange order to get 10 `ABC` from the mobile application. Once the order has been matched, the user needs to send the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
+11. a) eWallet A receives the Plasma event through the watcher, confirm the consumption and notifies eWallet B. eWallet B forward the event to the user's mobile application to let him know the transaction has been confirmed.
+12. a) eWallet A POS/Admin panel receives an event in the websocket channel for the transaction request.
+13. a) The user gets what he paid for.
+
 
 #### eWallet (Full custody) -> eWallet (Non custodial)
 
