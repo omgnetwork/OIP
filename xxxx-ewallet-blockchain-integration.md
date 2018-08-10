@@ -26,7 +26,7 @@ The eWallet Ethereum Name Service is a smart contract running on the Ethereum bl
 
 Blockchain wallets will be the representations of Ethereum accounts in the eWallet. Two types of blockchain wallets will exist: `hot` and `cold`.
 
-The eWallet saves the encrypted private keys of the `hot` wallets in the database, with the encryption key being stored in an environment variable. No private keys are stored with `cold` wallets and the administrators are responsible for managing them directly. Interaction with `cold` wallets will require manual action through [Metamask](https://metamask.io/) or similar tools.
+The eWallet saves the encrypted private keys of the `hot` wallets in the database, with the encryption key being stored in a file to which only the application has access. No private keys are stored with `cold` wallets and the administrators are responsible for managing them directly. Interaction with `cold` wallets will require manual action through [Metamask](https://metamask.io/) or similar tools.
 
 See "Database Changes" for more information.
 
@@ -206,7 +206,7 @@ The blockchain interface will define functions that need to be implemented in th
 
 #### Database Changes
 
-Table name: `contract_templates`
+Table name: `contract_templates` (New)
 
 - `uuid`
 - `name`
@@ -214,7 +214,7 @@ Table name: `contract_templates`
 - `inserted_at`
 - `updated_at`
 
-Table name: `blockchain_wallet`
+Table name: `blockchain_wallet` (New)
 
 - `uuid`
 - `address`
@@ -225,7 +225,7 @@ Table name: `blockchain_wallet`
 - `inserted_at`
 - `updated_at`
 
-Table name: `limits`
+Table name: `limits` (New)
 
 - `uuid`
 - `token_id`
@@ -238,7 +238,7 @@ Table name: `limits`
 
 In case a blockchain wallet goes below or above the limits, a user will be notified that an action is required to keep the system secure (like moving funds in/out from/to a cold wallet.
 
-Table name: `child_chain_contract`
+Table name: `child_chain_contract` (New)
 
 - `uuid`
 - `contract_address`
@@ -246,7 +246,7 @@ Table name: `child_chain_contract`
 - `inserted_at`
 - `updated_at`
 
-Table name: `deposit`
+Table name: `deposit` (New)
 
 - `uuid`
 - `child_chain_contract_uuid`
@@ -254,13 +254,13 @@ Table name: `deposit`
 - `token_id`
 - `inserted_at`
 
-Table name: `exit`
+Table name: `exit` (New)
 
 - `uuid`
 - `child_chain_contract_uuid`
 - `inserted_at`
 
-Table name: `exited_balances`
+Table name: `exited_balances` (New)
 
 - `uuid`
 - `exit_uuid`
@@ -268,38 +268,38 @@ Table name: `exited_balances`
 - `token_id`
 - `inserted_at`
 
-Table name: `wallet`
+Table name: `wallet` (Existing)
 
 - `blockchain_wallet_uuid` (`nullable`)
 
-Table name: `token`
+Table name: `token` (Existing)
 
 - `contract_address` (`nullable`)
 - `contract_template_uuid` (`nullable`)
 - `status` (`pending`|`confirmed`)
 
-Table name: `mint`
+Table name: `mint` (Existing)
 
 - `status` (`pending`|`confirmed`)
 
-Table name: `setting`
+Table name: `setting` (New)
 
 - `key`
 - `value`
 - `inserted_at`
 - `updated_at`
 
-Table name: `transaction`
+Table name: `transaction` (Existing)
 
 - `type` (`internal`|`external`)
 
 If the transaction is `external`, the addresses will be from blockchain wallets.
 
-Table name: `transaction_request`
+Table name: `transaction_request` (Existing)
 
 - `blockchain_wallet_address`
 
-Table name: `transaction_consumption`
+Table name: `transaction_consumption` (Existing)
 
 - `ewallet_pub_key`
 - `blockchain_wallet_address`
@@ -309,5 +309,7 @@ Keys / Values:
 `ewallet_identifier` : `pub_key` (`null` if not setup with blockchain)
 
 #### Flows Implementations
+
+This section describes how the flows explained earlier interact with the eWallet entities.
 
 Coming soon.
