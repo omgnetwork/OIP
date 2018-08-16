@@ -7,7 +7,7 @@ author: Thibault Denizet <thibault@omise.co>
 created: 2018-08-08
 ---
 
-# OIP-0004: eWallet Blockchain Integration
+# OIP-xxxx: eWallet Blockchain Integration
 
 ## Abstract
 
