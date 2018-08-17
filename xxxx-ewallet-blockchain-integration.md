@@ -17,7 +17,7 @@ This OIP describes the changes required to plug an eWallet onto Ethereum and Pla
 
 ### eWallet Ethereum Name Service
 
-The eWallet Ethereum Name Service is a smart contract running on the Ethereum blockchain that allows eWallet providers to register their eWallet as being part of the network. It is a simple key/value storage where the key is the eWallet primary public key and the value their current domain name.
+The eWallet Ethereum Name Service is a smart contract running on the Ethereum blockchain that allows eWallet providers to register their eWallet as being part of the network. It is a simple key/value storage where the key is the eWallet master public key and the value their current domain name.
 
 - Option #1: Using [ENS](https://ens.domains/)
 - Option #2: Build a simple eWallet Name Service.
@@ -26,13 +26,29 @@ The eWallet Ethereum Name Service is a smart contract running on the Ethereum bl
 
 Blockchain wallets will be the representations of Ethereum accounts in the eWallet. Two types of blockchain wallets will exist: `hot` and `cold`.
 
+__From a blockchain wallet address, it should be possible to get how much funds are available on the root chain, and how much on the child chains__.
+
 The eWallet saves the encrypted private keys of the `hot` wallets in the database, with the encryption key being stored in a file to which only the application has access. No private keys are stored with `cold` wallets and the administrators are responsible for managing them directly. Interaction with `cold` wallets will require manual action through [Metamask](https://metamask.io/) or similar tools.
+
+Basically, a blockchain wallet will contain:
+
+- Encrypted Ethereum private key
+- Ethereum public key
+- Ethereum address
 
 See "Database Changes" for more information.
 
-### Plasma Deposits and Exists
+### Transaction Types
 
-Every time funds are deposited on a plasma chain or exited, a deposit/exit will be recorded in the database.
+Currently, the eWallet only support `internal` transactions. With the blockchain integration, new types of transactions will be introduced:
+
+- `internal`: A transaction that happens inside an eWallet. It only involves updating internal balances.
+- `root_chain`: A transaction happening at the root chain level. In the Ethereum / Plasma case, this would be a regular Ethereum transaction.
+- `chain` or `child_chain`: A transaction happening in one of the child chains. In the Ethereum / Plasma case, that would be a Plasma transaction.
+
+### Plasma Deposits and Exits
+
+Deposit and exit records are expected to be saved and retrievable through the Watcher.
 
 ### Ethereum / Plasma SDKs
 
@@ -46,9 +62,7 @@ In order to allow users owning their keys to access their funds from provider's 
 
 ### eWallet Setup
 
-The only mandatory step to plug an eWallet to Ethereum is to generate a new Ethereum account. The public key for that Ethereum account will be used as the main identifier for the eWallet. The private key will be encrypted and stored in the database, while the encryption key is stored in environment variables.
-
-This value should be stored in the `Setting` table, under `primary_pub_key`
+The only mandatory step to plug an eWallet to Ethereum is to generate a new Ethereum account. From that Ethereum account, a `hot` `master` blockchain wallet will be generated. The public key for that Ethereum account (stored in a blockchain wallet) will be used as the main identifier for the eWallet.
 
 ### Token creation
 
@@ -98,7 +112,7 @@ However, if a user owns the private key, the flows changes.
 
 ##### From an eWallet to a user
 
-1. A user purchases something through a provider, and that provider wnats to reward him with some loyalty ETC-20 tokens.
+1. A user purchases something through a provider, and that provider wants to reward him with some loyalty ERC-20 tokens.
 2. The user specifies the address where he wishes to receive funds. This can be selected from a list of addresses the eWallet knows belong to the user, or an entirely different address.
 2. Once the purchase is settled, a transaction is signed and sent from the eWallet to the address given by the user.
 3. The eWallet will keep an eye out on the transaction to see that it proceeds as expected, reporting the status to the user through websockets.
@@ -108,7 +122,7 @@ However, if a user owns the private key, the flows changes.
 For the flows below, we'll use the following use-case:
 
 ```
-A end-user wants to purchase something from eWallet A using a mobile application published by (and therefore connected to) eWallet B.
+An end-user wants to purchase something from eWallet A using a mobile application published by (and therefore connected to) eWallet B.
 ```
 
 In the cases below, both eWallets have funds deposited in Plasma: eWallet A has `ABC` tokens while eWallet B has `ZYX` tokens.
@@ -117,7 +131,13 @@ In the cases below, both eWallets have funds deposited in Plasma: eWallet A has 
 
 1. Using eWallet B mobile app, a user wants to send funds to an Ethereum address.
 2. The user submit the transaction to eWallet B, specifying how many tokens should be transferred and to which address.
-3. eWallet B submits the transaction and let user knows about its progress/finality.
+3. eWallet B submits the transaction on Ethereum and let user knows about its progress/finality.
+
+#### eWallet A (Full custody) -> Plasma address with regular transaction
+
+1. Using eWallet B mobile app, a user wants to send funds to a Plasma address.
+2. The user submit the transaction to eWallet B, specifying how many tokens should be transferred and to which address.
+3. eWallet B submits the transaction on Plasma and let user knows about its progress/finality.
 
 #### eWallet A (Full custody) -> eWallet B (Full custody) with regular transaction
 
@@ -142,6 +162,8 @@ In the cases below, both eWallets have funds deposited in Plasma: eWallet A has 
 
 #### eWallet's user (User custody) -> eWallet (Full custody)
 
+Prerequisite: The user in the scenario below should have funds on Plasma already.
+
 1. Using eWallet B mobile app, the user scans a QR code to pay for his purchase at eWallet A (10 `ABC`) using funds stored in his Ethereum wallet (any currency). That QR code contains a string composed of an `ewallet_pub_key` and a transaction request ID.
 2. eWallet B mobile application calls the `transaction_request.consume` endpoint sending the content of the QR code.
 3. eWallet B detects that the received public key doesn't match its own, meaning the transaction request is hosted by another eWallet.
@@ -150,13 +172,14 @@ In the cases below, both eWallets have funds deposited in Plasma: eWallet A has 
 6. eWallet B forward the details to the user's mobile application.
 7. The user then needs to request a quote from the DEX directly in order to know how many of his choice of currency are needed to send 10 `ABC` to eWallet A. An event is sent to eWallet A/B about the progress.
 8. The user receives the quote back from the DEX on the Mobile application and approves it. An event is sent to eWallet A/B about the progress.
-9. The user deposits funds on Plasma in his choice of currency.
-10. The user places the exchange order to get 10 `ABC` from the mobile application. Once the order has been matched, the user needs to send the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
-11. eWallet A receives the Plasma event through the watcher, confirm the consumption and notifies eWallet B. eWallet B forward the event to the user's mobile application to let him know the transaction has been confirmed.
-12. eWallet A POS/Admin panel receives an event in the websocket channel for the transaction request.
-13. The user gets what he paid for.
+9. The user places the exchange order to get 10 `ABC` from the mobile application. Once the order has been matched, the user needs to send the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
+10. eWallet A receives the Plasma event through the watcher, confirm the consumption and notifies eWallet B. eWallet B forward the event to the user's mobile application to let him know the transaction has been confirmed.
+11. eWallet A POS/Admin panel receives an event in the websocket channel for the transaction request.
+12. The user gets what he paid for.
 
 #### eWallet's user (User custody) -> eWallet's user (User custody)
+
+Prerequisite: The user in the scenario below should have funds on Plasma already.
 
 1. Using eWallet B mobile app, the user scans a QR code to send tokens to his friends using eWallet A (10 `ABC`) using funds stored in his Ethereum wallet (any currency). That QR code contains a string composed of an `ewallet_pub_key` and a transaction request ID.
 2. eWallet B mobile application calls the `transaction_request.consume` endpoint sending the content of the QR code.
@@ -166,10 +189,9 @@ In the cases below, both eWallets have funds deposited in Plasma: eWallet A has 
 6. eWallet B forward the details to the user's mobile application, including the Ethereum address to which the funds need to be transferred.
 7. The user then needs to request a quote from the DEX directly in order to know how many of his choice of currency are needed to send 10 `ABC` to eWallet A's user. An event is sent to eWallet A/B about the progress.
 8. The user receives the quote back from the DEX on the Mobile application and approves it. An event is sent to eWallet A/B about the progress.
-9. The user deposits funds on Plasma in his choice of currency. This should be done beforehand unless the blockchain can handle fast-enough transaction.
-10. The user places the exchange order to get 10 `ABC` from the mobile application. Once the order has been matched, the user needs to send the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
-11. eWallet A receives the Plasma event through the watcher, confirm the consumption and notifies the user. eWallet B forward the event to the user's mobile application to let him know the transaction has been confirmed.
-12. eWallet A's user receives an event in the websocket channel for the transaction request.
+9. The user places the exchange order to get 10 `ABC` from the mobile application. Once the order has been matched, the user needs to send the funds (10 `ABC`) to eWallet A address on Plasma. An event is sent to eWallet A about the progress.
+10. eWallet A receives the Plasma event through the watcher, confirm the consumption and notifies the user. eWallet B forward the event to the user's mobile application to let him know the transaction has been confirmed.
+11. eWallet A's user receives an event in the websocket channel for the transaction request.
 
 ### Implementation
 
@@ -185,8 +207,8 @@ The blockchain interface will define functions that need to be implemented in th
 - `create_token`
 - `mint`
 - `burn`
+- `send_rootchain_transaction`
 - `send_chain_transaction`
-- `send_offchain_transaction`
 - `get_quote`
 - `place_exchange_order`
 - `register_listener`
@@ -198,8 +220,8 @@ The blockchain interface will define functions that need to be implemented in th
 - `mint` (adds more value to an existing token on Ethereum)
 - `deposit` (deposit funds to the specified Plasma contract)
 - `exit` (exit funds from the specified Plasma contract)
-- `send_chain_transaction` (sends an Ethereum transaction)
-- `send_offchain_transaction` (sends a Plasma transaction)
+- `send_rootchain_transaction` (sends an Ethereum transaction)
+- `send_chain_transaction` (sends a Plasma transaction)
 - `get_quote` (get a quote from Exchange)
 - `place_exchange_order` (place an order for exchange)
 - `register_listener` (register a GenServer as a listener to events from Ethereum and Plasma)
@@ -236,9 +258,11 @@ Table name: `limits` (New)
 - `inserted_at`
 - `updated_at`
 
-In case a blockchain wallet goes below or above the limits, a user will be notified that an action is required to keep the system secure (like moving funds in/out from/to a cold wallet.
+In case a blockchain wallet goes below or above the limits, a user will be notified that an action is required to keep the system secure (like moving funds in/out from/to a cold wallet. In the case of the hot wallet overflowing, funds could be automatically transferred to a cold wallet.
 
-Table name: `child_chain_contract` (New)
+Table name: `child_chain_contract` (New) (?)
+
+**Depending on how exits are handled and how tied the watchers are with Plasma chains, this might not be needed.**
 
 - `uuid`
 - `contract_address`
@@ -246,7 +270,7 @@ Table name: `child_chain_contract` (New)
 - `inserted_at`
 - `updated_at`
 
-Table name: `deposit` (New)
+Table name: `deposit` (New) (?)
 
 - `uuid`
 - `child_chain_contract_uuid`
@@ -254,7 +278,7 @@ Table name: `deposit` (New)
 - `token_id`
 - `inserted_at`
 
-Table name: `exit` (New)
+Table name: `exit` (New) (?)
 
 - `uuid`
 - `child_chain_contract_uuid`
