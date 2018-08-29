@@ -226,6 +226,22 @@ The blockchain interface will define functions that need to be implemented in th
 - `place_exchange_order` (place an order for exchange)
 - `register_listener` (register a GenServer as a listener to events from Ethereum and Plasma)
 
+##### Tesuji Plasma - Watcher
+
+In the case of Tesuji Plasma, it is expected for the watcher to have the following functionalities. If some of them end up not being present, they will be implemented in the eWallet instead.
+
+- UTXOs management: The Watcher should be as helpful as possible in terms of UTXOs management. Recommendations to split or merge UTXOs should be sent to the eWallet that will then perform those actions if desired (since the Watcher does not hold any private key).
+- UTXOs retrieval: The eWallet should be able to retrieve UTXOs from the Watcher.
+- Balance query: The eWallet should be able to get the balances for one (or more) addresses.
+- Prepare transaction: The eWallet should be able to send an amount and a `from` address to the Watcher to prepare a transaction (get a list of UTXOs to spend?)
+- Forward transaction: Once the Watcher has returned a list of spendable UTXOs that will cover the spend, the eWallet itself or a user will sign the transaction and send it to the Watcher. It is then the duty of the Watcher to transmit the signed transaction to Plasma.
+- Event emitting: The Watcher should provide a live interface to receive events from Plasma in real-time. Some of these events should include `transactions`, `confirmations` and any other relevant event.
+
+Some more features will be required for the next iteration (with exchange):
+
+- Getting a quote for an exchange of tokens
+- Everything involved with placing an order on the DEX
+
 #### Database Changes
 
 Table name: `contract_templates` (New)
@@ -332,8 +348,22 @@ Keys / Values:
 
 `ewallet_identifier` : `pub_key` (`null` if not setup with blockchain)
 
-#### Flows Implementations
+#### Admin Panel updates
 
-This section describes how the flows explained earlier interact with the eWallet entities.
+The admin panel will need to be updated with new screens to deal with blockchain integration.
 
-Coming soon.
+- Setup Wizard for new installations
+- Setup Wizard for existing installations
+- Blockchain wallet management
+- Manage blockchain node and Plasma Watcher (at least see status)
+- token differentiation between local / blockchain ones
+- Transactions with blockchain addresses
+- Listen to events from Watcher
+
+### Implementation steps
+
+Blockchain features will slowly be added to the eWallet and hidden behind feature flags. The three major steps that will be divided further into smaller chunks of work are:
+
+1. We'll start with Ethereum integration first, and the possibility to send Ethereum transaction without any exchange between eWallets (for ETH and ERC20 tokens).
+2. We will then plug on Plasma and start sending transaction there using the Watcher.
+3. Finally, exchanges through Plasma will be incorporated.
