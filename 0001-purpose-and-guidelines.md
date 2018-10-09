@@ -93,8 +93,8 @@ Each OIP should have the following parts:
 
 ## OIP Formats and Templates
 
-OIPs should be written in [markdown] format.
-Image files should be included in a subdirectory of the `assets` folder for that OIP as follow: `assets/oip-X` (for oip **X**). When linking to an image in the OIP, use relative links such as `../assets/oip-X/image.png`.
+OIPs should be written in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) format.
+Image files should be included in a subdirectory of the `assets` folder for that OIP as follow: `assets/oip-X` (for oip X). When linking to an image in the OIP, use relative links such as `../assets/oip-X/image.png`.
 
 ### OIP Header Preamble
 
