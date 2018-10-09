@@ -7,22 +7,6 @@ author: Unnawut Leepaisalsuwanna <unnawut@omise.co>
 created: 2018-10-05
 ---
 
-https://www.python.org/dev/peps/pep-0001/
-
-The structures of EIP-1 and BIP-0001 are pretty much the same
-- https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1.md
-- https://github.com/bitcoin/bips/blob/master/bip-0001.mediawiki
-
-# PEP-1 content that are excluded here:
-
-- Python's BDFL
-- Start with an idea for Python
-- Submitting a PEP
-- PEP Review & Resolution
-- PEP Maintenance
-- Reporting PEP Bugs, or Submitting PEP Updates
-- References and Footnotes
-
 # OIP-0001: OIP Purpose and Guidelines
 
 ## What is an OIP?
