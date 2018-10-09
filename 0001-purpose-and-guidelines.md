@@ -44,7 +44,7 @@ Parties involved in the process are you, the champion or *OIP author*, and the [
 
 :warning: Before you begin, vet your idea, this will save you time. Ask the OmiseGO community first if an idea is original to avoid wasting time on something that will be be rejected based on prior research (searching the Internet does not always do the trick). It also helps to make sure the idea is applicable to the entire community and not just the author. Just because an idea sounds good to the author does not mean it will work for most people in most areas where OmiseGO is used.
 
-Examples of appropriate public forums to gauge interest around your OIP include [the OmiseGO subreddit](https://www.reddit.com/r/omise_go/), [the Issues section of this repository](https://github.com/omisego/OIP/issues/), and [one of the OmiseGO Gitter chat rooms](https://gitter.im/omisego/). In particular, [the Issues section of this repository](https://github.com/omisego/OIP/issues/) is an excellent place to discuss your proposal with the community and start creating more formalized language around your OIP.
+Examples of appropriate public forums to gauge interest around your OIP include [the Issues section of this repository](https://github.com/omisego/OIP/issues/), [one of the OmiseGO Gitter chat rooms](https://gitter.im/omisego/), and [the OmiseGO subreddit](https://www.reddit.com/r/omise_go/). In particular, [the Issues section of this repository](https://github.com/omisego/OIP/issues/) is an excellent place to discuss your proposal with the community and start creating more formalized language around your OIP.
 
 Your role as the champion is to write the OIP using the style and format described below, shepherd the discussions in the appropriate forums, and build community consensus around the idea. Following is the process that a successful OIP will move along:
 
@@ -62,9 +62,9 @@ Each status change is requested by the OIP author and reviewed by the OIP editor
   * :arrow_right: Last Call -- If agreeable, the OIP editor will assign Last Call status and set a review end date, normally 14 days later.
   * :x: Last Call -- A request for Last Call status will be denied if material changes are still expected to be made to the draft. We hope that OIPs only enter Last Call once, so as to avoid unnecessary noise on the RSS feed.
 * **Last Call** -- This indicates that the OIP has matured and is ready to be accepted or finalized unless material changes or substantial unaddressed technical complaints arise.
-  * :x: -- A Last Call which results in material changes or substantial unaddressed technical complaints will cause the OIP to revert to Draft.
   * :arrow_right: Accepted (Standard Track OIPs only) -- A successful Last Call without material changes or unaddressed technical complaints will become Accepted.
   * :arrow_right: Final (Non-Standard Track OIPs) -- A successful Last Call without material changes or unaddressed technical complaints will become Final.
+  * :x: -- A Last Call which results in material changes or substantial unaddressed technical complaints will cause the OIP to revert to Draft.
 * **Accepted (Core OIPs only)** -- This OIP is in the hands of the OmiseGO client developers.
   * :arrow_right: Final -- Standard Track Core OIPs must be implemented in at least two-thirds of viable OmiseGO clients before it can be considered Final. When the implementation is complete and adopted by the community, the status will be changed to “Final”.
 * **Final** -- This OIP represents the current state-of-the-art. A Final OIP should only be updated to correct errata.
@@ -84,7 +84,7 @@ Each OIP should have the following parts:
 - **Simple Summary** - “If you can’t explain it simply, you don’t understand it well enough.” Provide a simplified and layman-accessible explanation of the OIP.
 - **Abstract** - a short (~200 word) description of the technical issue being addressed.
 - **Motivation (optional)** - The motivation is critical for OIPs that want to change the OmiseGO protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the OIP solves. OIP submissions without sufficient motivation may be rejected outright.
-- **Specification** - The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current OmiseGO platforms (cpp-ethereum, go-ethereum, parity, ethereumJ, ethereumjs-lib, [and others](https://github.com/ethereum/wiki/wiki/Clients).
+- **Specification** - The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current OmiseGO platforms.
 - **Rationale** - The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages. The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
 - **Backwards Compatibility** - All OIPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The OIP must explain how the author proposes to deal with these incompatibilities. OIP submissions without a sufficient backwards compatibility treatise may be rejected outright.
 - **Test Cases** - Test cases for an implementation are mandatory for OIPs that are affecting consensus changes. Other OIPs can choose to include links to test cases if applicable.
@@ -167,11 +167,9 @@ If you are interested in assuming ownership of an OIP, send a message asking to 
 
 The current OIP editors are
 
-` * Thibault Denizet (@T-Dnzt)`
-
-` * Jeremy Lam (@whoisjeremylam)`
-
-` * Unnawut Leepaisalsuwanna (@unnawut)`
+- Thibault Denizet (@T-Dnzt)
+- Jeremy Lam (@whoisjeremylam)
+- Unnawut Leepaisalsuwanna (@unnawut)
 
 ## OIP Editor Responsibilities
 
