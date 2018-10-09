@@ -115,7 +115,7 @@ Each OIP must begin with an RFC 822 style header preamble, preceded and followed
 - `superseded-by:` (optional) \<OIP number(s)\>
 - `resolution:` (optional) \<A url pointing to the resolution of this OIP\>
 
-#### Header descriptions
+#### OIP Header Preamble Usage
 
 The `author` header optionally lists the names, email addresses or usernames of the authors/owners of the OIP. Those who prefer anonymity may use a username only, or a first name and a username. The format of the author header value must be:
 
@@ -203,4 +203,4 @@ Although the PEP-0001 text was written by Barry Warsaw, Jeremy Hylton, and David
 
 ## License
 
-The OmiseGO Improvement Proposal is released under the Apache License.
+The OmiseGO Improvement Proposal is released under the [Apache License](LICENSE).
