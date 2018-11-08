@@ -25,7 +25,7 @@ Priority levels are used to define the business impact to a technical service fa
 
 ### P0
 
-A P0 event is the most severe incident that can happen. An example of this would be a failure of multiple related services, failure of the entire Plamsa chain, or a funds beind deposited into an incorrect wallet account. These events have the capability to impact revenue steams or create significant reputational damage with users and/or partners.
+A P0 event is the most severe incident that can happen. An example of this would be a failure of multiple related services, failure of the entire Plasma chain, or funds being deposited into an incorrect wallet account. These events have the capability to impact revenue steams or create significant reputational damage with users and/or partners.
 
 ### P1
 
