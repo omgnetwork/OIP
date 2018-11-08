@@ -15,7 +15,7 @@ Outages are common place when running services. Managing these incidents with a 
 
 ## What defines an incident?
 
-An incident is an event that affects normal operation of an OmiseGo service. This can be a service that is used internally or externally, such as an automation service or a Plasma blockchain. Services are measured to determine normal operation through service level indicators (SLIs), from which service level objectives (SLOs) can be applied.
+An incident is an event that affects normal operation of an OmiseGO service. This can be a service that is used internally or externally, such as an automation service or a Plasma blockchain. Services are measured to determine normal operation through service level indicators (SLIs), from which service level objectives (SLOs) can be applied.
 
 For example, we may give assurances to third party partners that an endpoint API on a Watcher instance is avaiable for 99.999% of the time. And we may give an assurance that the same API is returns a response within 300ms 99% of the time. If we're not meeting those service level objectives then an incident should be raised.
 
