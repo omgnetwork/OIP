@@ -3,7 +3,7 @@ oip: "0005"
 title: Incident Response
 status: Draft
 type: Operations
-author: Jake Bunce <jake@omse.co>
+author: Jake Bunce <jake@omise.co>
 created: 2018-11-
 ---
 
