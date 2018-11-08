@@ -27,7 +27,7 @@ There are three types of OIP:
 
 - **A Standard Track OIP** describes any changes that affects one or more OmiseGO implementations, such as a change to the network protocol, a change in business rules, proposed application standards/conventions, or any change or addition that affects the interoperability with the OmiseGO applications. Furthermore, Standard OIPs can be broken down into the following categories.
   - **Core** - improvements requiring a consensus fork, as well as changes that are not necessarily consensus critical but may be relevant to core dev discussions.
-  - **Blockchain** - improvements around the blockchain application.
+  - **Interface** - improvements around the client API/RPC specifications and standards.
   - **eWallet** - improvements around the eWallet application.
 
 - **An Informational OIP** describes an OmiseGO design issue, or provides general guidelines or information to the OmiseGO community, but does not propose a new feature. Informational OIPs do not necessarily represent OmiseGO community consensus or a recommendation, so users and implementers are free to ignore Informational OIPs or follow their advice.
