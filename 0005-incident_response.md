@@ -4,7 +4,7 @@ title: Incident Response
 status: Draft
 type: Operations
 author: Jake Bunce <jake@omise.co>
-created: 2018-11-
+created: 2018-11-09
 ---
 
 # OIP-0005: Incident Response 
@@ -27,17 +27,44 @@ Priority levels are used to define the business impact to a technical service fa
 
 A P0 event is the most severe incident that can happen. An example of this would be a failure of multiple related services, failure of the entire Plasma chain, or funds being deposited into an incorrect wallet account. These events have the capability to impact revenue steams or create significant reputational damage with users and/or partners.
 
+Areas of notification:
+- Third party partners
+- Community
+- Executive level
+- Product owner(s)
+- Affected technical team(s)
+- DevOps
+
 ### P1
 
 A P1 is an event that an entire service is unavailable. None of the features of the service are usable. 
+
+Areas of notification:
+- Third party partners
+- Community
+- Product owner
+- Affected technical team
+- DevOps
 
 ### P2
 
 In a P2 event a component of the service is unavailable. This may be an API endpoint, or a particular feature of the service.
 
+Areas of notification:
+- Third party partners
+- Community
+- Affected technical team
+- DevOps
+
 ### P3
 
 A P3 is an event where a service is degraded and is not performing as expected. SLOs may be breached with API calls taking longer, creating a negative user experience. 
+
+Areas of notification:
+- Third party partners
+- Community
+- Affected technical team
+- DevOps
  
 ## Co-ordination during incidents
 
