@@ -1,7 +1,7 @@
 ---
 oip: "0001"
 title: OIP Purpose and Guidelines
-status: Last Call
+status: Active
 type: Meta
 author: Unnawut Leepaisalsuwanna <unnawut@omise.co>
 created: 2018-10-05
