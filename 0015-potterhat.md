@@ -2,7 +2,7 @@
 oip: "0015"
 title: PotterHat - A multi-client Ethereum data service
 status: Final
-type: eWallet
+type: Potterhat
 author: Unnawut Leepaisalsuwanna <unnawut@omise.co>
 created: 2019-03-27
 ---
